@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/ProjectA.iml" filepath="$PROJECT_DIR$/.idea/ProjectA.iml" />
+      <module fileurl="file://$USER_HOME$/Desktop/PycharmProjects/my-first-app/.idea/my-first-app.iml" filepath="$USER_HOME$/Desktop/PycharmProjects/my-first-app/.idea/my-first-app.iml" />
+    </modules>
+  </component>
+</project>
