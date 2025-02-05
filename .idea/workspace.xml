@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2e280885-6325-480f-8418-2246159ec1e5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/air_quality_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/air_quality_app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -69,7 +70,7 @@
       <workItem from="1738695758816" duration="3039000" />
       <workItem from="1738698864247" duration="127000" />
       <workItem from="1738722397532" duration="576000" />
-      <workItem from="1738788405609" duration="1275000" />
+      <workItem from="1738788405609" duration="2217000" />
     </task>
     <servers />
   </component>
@@ -77,6 +78,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ProjectA$air_quality_app.coverage" NAME="air_quality_app Coverage Results" MODIFIED="1738789633185" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ProjectA$air_quality_app.coverage" NAME="air_quality_app Coverage Results" MODIFIED="1738790486564" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -23,15 +23,8 @@ class AirQualityDashboard:
         for df in [self.ozone_df, self.pm25_df]:
             df["Date"] = pd.to_datetime(df["Date"], format="%m/%d/%Y")
 
-        # Process time series data
-        self.process_time_series_data()
         # Get latest data
         self.process_latest_data()
-
-    def process_time_series_data(self):
-        # Calculate daily averages for both pollutants
-        self.ozone_daily = self.ozone_df.groupby('Date')['Daily AQI Value'].mean().reset_index()
-        self.pm25_daily = self.pm25_df.groupby('Date')['Daily AQI Value'].mean().reset_index()
 
     def process_latest_data(self):
         # Filter latest air quality data
@@ -42,43 +35,54 @@ class AirQualityDashboard:
         self.app = Dash(__name__)
 
         self.app.layout = html.Div([
-            # Title
+            # Title (smaller size)
             html.Div([
-                html.H1("Los Angeles County Air Quality Dashboard",
-                        style={'textAlign': 'center', 'color': '#2c3e50'}),
+                html.H2("LA County Air Quality Dashboard", style={'textAlign': 'center', 'color': '#2c3e50'}),
                 html.P("Monitor air quality trends and current conditions across LA County.",
-                       style={'textAlign': 'center', 'color': '#7f8c8d'}),
-            ], style={'margin': '20px'}),
+                       style={'textAlign': 'center', 'color': '#7f8c8d', 'fontSize': '14px'}),
+            ], style={'margin': '10px'}),
 
-            # Map and Time Series Container
+            # Map Section (Now on top)
             html.Div([
-                # Left Column - Map
-                html.Div([
-                    html.H3("Current Air Quality Map", style={'textAlign': 'center'}),
-                    dcc.Checklist(
-                        id="layer-selector",
-                        options=[
-                            {"label": " Ozone ", "value": "ozone"},
-                            {"label": " PM2.5 ", "value": "pm25"}
-                        ],
-                        value=["ozone", "pm25"],
-                        inline=True,
-                        style={'textAlign': 'center', 'margin': '10px'}
-                    ),
-                    dcc.Graph(
-                        id="air-quality-map",
-                        style={'height': '45vh'}
-                    ),
-                ], style={'width': '48%', 'display': 'inline-block', 'vertical-align': 'top'}),
+                html.H4("Current Air Quality Map", style={'textAlign': 'center', 'marginBottom': '5px'}),
+                dcc.Checklist(
+                    id="layer-selector",
+                    options=[
+                        {"label": " Ozone ", "value": "ozone"},
+                        {"label": " PM2.5 ", "value": "pm25"}
+                    ],
+                    value=["ozone", "pm25"],
+                    inline=True,
+                    style={'textAlign': 'center', 'marginBottom': '10px'}
+                ),
+                dcc.Graph(
+                    id="air-quality-map",
+                    style={'height': '50vh'}
+                ),
+            ], style={'marginBottom': '20px'}),
 
-                # Right Column - Time Series
-                html.Div([
-                    html.H3("Historical Air Quality Trends", style={'textAlign': 'center'}),
-                    dcc.Graph(
-                        id="time-series-graph",
-                        style={'height': '45vh'}
-                    ),
-                ], style={'width': '48%', 'display': 'inline-block', 'vertical-align': 'top', 'marginLeft': '4%'}),
+            # Month Selector
+            html.Div([
+                html.H4("Select a Month for Historical Trends", style={'textAlign': 'center', 'marginBottom': '5px'}),
+                dcc.Dropdown(
+                    id="month-selector",
+                    options=[
+                        {"label": date.strftime("%B %Y"), "value": date.strftime("%Y-%m")}
+                        for date in sorted(self.ozone_df["Date"].dt.to_period("M").unique())
+                    ],
+                    value=self.ozone_df["Date"].max().strftime("%Y-%m"),  # Default to latest month
+                    clearable=False,
+                    style={'width': '50%', 'margin': 'auto'}
+                )
+            ], style={'marginBottom': '20px'}),
+
+            # Historical Trends (Now below the map)
+            html.Div([
+                html.H4("Historical Air Quality Trends by Location", style={'textAlign': 'center'}),
+                dcc.Graph(
+                    id="time-series-graph",
+                    style={'height': '45vh'}
+                ),
             ]),
 
             # Statistics Section
@@ -95,9 +99,16 @@ class AirQualityDashboard:
             [Output("air-quality-map", "figure"),
              Output("time-series-graph", "figure"),
              Output("statistics-output", "children")],
-            Input("layer-selector", "value")
+            [Input("layer-selector", "value"),
+             Input("month-selector", "value")]
         )
-        def update_dashboard(selected_layers):
+        def update_dashboard(selected_layers, selected_month):
+            selected_month = pd.to_datetime(selected_month)  # Convert to datetime
+
+            # Filter data by selected month
+            filtered_ozone = self.ozone_df[self.ozone_df["Date"].dt.to_period("M") == selected_month.to_period("M")]
+            filtered_pm25 = self.pm25_df[self.pm25_df["Date"].dt.to_period("M") == selected_month.to_period("M")]
+
             # Create map
             map_fig = px.scatter_mapbox(
                 lat=[34.05],
@@ -108,17 +119,12 @@ class AirQualityDashboard:
             # Initialize statistics text
             stats_text = []
 
-            # Calculate colorbar positions
-            colorbar_x_positions = {
-                "ozone": 1.02,
-                "pm25": 1.12
-            }
+            # Colorbar positions
+            colorbar_x_positions = {"ozone": 1.02, "pm25": 1.12}
 
             # Add layers and collect statistics
-            for layer, color_scale in [("ozone", "Reds"), ("pm25", "Blues")]:
+            for layer, color_scale, df in [("ozone", "Reds", filtered_ozone), ("pm25", "Blues", filtered_pm25)]:
                 if layer in selected_layers:
-                    df = self.ozone_latest if layer == "ozone" else self.pm25_latest
-
                     map_fig.add_scattermapbox(
                         lat=df["Site Latitude"],
                         lon=df["Site Longitude"],
@@ -160,57 +166,37 @@ class AirQualityDashboard:
                     zoom=9
                 ),
                 margin=dict(r=100, t=0, l=0, b=0),
-                showlegend=True,
-                legend=dict(
-                    yanchor="top",
-                    y=0.99,
-                    xanchor="left",
-                    x=0.01,
-                    bgcolor="rgba(255, 255, 255, 0.8)"
-                )
+                showlegend=True
             )
 
-            # Create time series plot
+            # Create time series plot by location
             time_series_fig = go.Figure()
 
-            if "ozone" in selected_layers:
+            for site_name in filtered_ozone["Local Site Name"].unique():
+                site_data = filtered_ozone[filtered_ozone["Local Site Name"] == site_name]
                 time_series_fig.add_trace(go.Scatter(
-                    x=self.ozone_daily["Date"],
-                    y=self.ozone_daily["Daily AQI Value"],
-                    name="Ozone",
-                    line=dict(color="red")
+                    x=site_data["Date"],
+                    y=site_data["Daily AQI Value"],
+                    name=f"Ozone - {site_name}",
+                    line=dict(dash="solid", width=2)
                 ))
 
-            if "pm25" in selected_layers:
+            for site_name in filtered_pm25["Local Site Name"].unique():
+                site_data = filtered_pm25[filtered_pm25["Local Site Name"] == site_name]
                 time_series_fig.add_trace(go.Scatter(
-                    x=self.pm25_daily["Date"],
-                    y=self.pm25_daily["Daily AQI Value"],
-                    name="PM2.5",
-                    line=dict(color="blue")
+                    x=site_data["Date"],
+                    y=site_data["Daily AQI Value"],
+                    name=f"PM2.5 - {site_name}",
+                    line=dict(dash="dot", width=2)
                 ))
 
             time_series_fig.update_layout(
-                title="Average Daily AQI Values",
+                title="Daily AQI Trends by Monitoring Site",
                 xaxis_title="Date",
                 yaxis_title="AQI Value",
                 hovermode='x unified',
                 margin=dict(l=60, r=30, t=50, b=40),
-                legend=dict(
-                    yanchor="top",
-                    y=0.99,
-                    xanchor="right",
-                    x=0.99,
-                    bgcolor="rgba(255, 255, 255, 0.8)"
-                )
-            )
-
-            # Add threshold line
-            time_series_fig.add_hline(
-                y=self.poor_air_threshold,
-                line_dash="dash",
-                line_color="red",
-                opacity=0.5,
-                annotation_text="Poor Air Quality Threshold"
+                legend_title="Monitoring Sites"
             )
 
             return map_fig, time_series_fig, stats_text
