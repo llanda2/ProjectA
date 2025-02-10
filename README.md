@@ -2,6 +2,7 @@
 
 ## Your Name and Course Information  
 **Name:** Lauren Landa 
+
 **Course:** CS 150
 
 ## Thesis Statement  
