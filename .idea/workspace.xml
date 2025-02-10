@@ -43,7 +43,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "com.google.cloudcode.ide_session_index": "20250205_0000",
+    "com.google.cloudcode.ide_session_index": "20250205_0001",
     "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -70,7 +70,8 @@
       <workItem from="1738695758816" duration="3039000" />
       <workItem from="1738698864247" duration="127000" />
       <workItem from="1738722397532" duration="576000" />
-      <workItem from="1738788405609" duration="2217000" />
+      <workItem from="1738788405609" duration="3479000" />
+      <workItem from="1738809907620" duration="719000" />
     </task>
     <servers />
   </component>
@@ -78,6 +79,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ProjectA$air_quality_app.coverage" NAME="air_quality_app Coverage Results" MODIFIED="1738790486564" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ProjectA$air_quality_app.coverage" NAME="air_quality_app Coverage Results" MODIFIED="1738810301380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
