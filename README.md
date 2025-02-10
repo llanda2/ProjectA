@@ -1,7 +1,9 @@
 # Air Quality in Los Angeles County: A Data Visualization Project  
 
-## Your Name and Course Information  
+## Name and Course Informatiom
 **Name:** Lauren Landa 
+
+**Instructor Name:** Mike Ryu
 
 **Course:** CS 150
 
